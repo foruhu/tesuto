@@ -929,6 +929,83 @@ function importShareCode() {
   }
 }
 
+// モーダルを開いて一覧を描画する
+function openShareModal() {
+  const container = document.getElementById('share-moueuver-list');
+  if (!container) return;
+
+  // 選択されているマニューバを取得（画面の入力状態から集計する例）
+  // ※実際のデータ構造に合わせて取得処理を調整してください
+  const selectedManeuvers = getSelectedManeuversData(); 
+
+  if (selectedManeuvers.length === 0) {
+    container.innerHTML = '<p style="color:#888;">選択されているマニューバがありません。</p>';
+  } else {
+    // バックティック（`）を使ってHTML要素を安全に組み立て
+    container.innerHTML = selectedManeuvers.map(item => `
+      <div class="share-item">
+        <div class="item-header">
+          <span>${item.name}</span>
+          <span>[${item.timing} / 判定:${item.check} / コスト:${item.cost}]</span>
+        </div>
+        <div class="item-detail">
+          【部位】${item.part} | 【射程】${item.range} <br>
+          ${item.effect}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // モーダルを表示
+  document.getElementById('share-modal').style.display = 'flex';
+}
+
+// モーダルを閉じる
+function closeShareModal() {
+  document.getElementById('share-modal').style.display = 'none';
+}
+
+// 現在画面で選択・チェックされているデータを取り出す関数の例
+function getSelectedManeuversData() {
+  const results = [];
+  
+  // 例: テーブル行やチェックボックスからデータを取得する
+  const rows = document.querySelectorAll('#parts-container tr');
+  rows.forEach(row => {
+    const checkbox = row.querySelector('input[type="checkbox"]:checked');
+    const nameEl = row.querySelector('.maneuver-name');
+    
+    // チェックが入っているか、名前が存在する場合
+    if (nameEl && nameEl.value) {
+      results.push({
+        name: nameEl.value,
+        timing: row.querySelector('.timing')?.value || 'オート',
+        check: row.querySelector('.check')?.value || 'NC',
+        cost: row.querySelector('.cost')?.value || '0',
+        part: row.querySelector('.part')?.value || 'パーツ',
+        range: row.querySelector('.range')?.value || '自身',
+        effect: row.querySelector('.effect')?.value || ''
+      });
+    }
+  });
+
+  return results;
+}
+
+// テキスト形式でクリップボードにコピー（テキスト共有用）
+function copyShareText() {
+  const maneuvers = getSelectedManeuversData();
+  if (maneuvers.length === 0) return alert('コピーするマニューバがありません。');
+
+  const text = maneuvers.map(m => 
+    `■${m.name}（${m.part}）\nタイミング:${m.timing} / 判定:${m.check} / コスト:${m.cost} / 射程:${m.range}\n効果:${m.effect}`
+  ).join('\n\n');
+
+  navigator.clipboard.writeText(text).then(() => {
+    alert('マニューバ一覧をクリップボードにコピーしました！');
+  });
+}
+
 window.onload = function() {
   if (typeof renderPartsContainer === 'function') renderPartsContainer();
   onClassChange();
