@@ -322,26 +322,6 @@
   📜 使い方を見る
 </a>
 
-<!-- 共有表示呼び出しボタン -->
-<button type="button" class="btn-share" onclick="openShareModal()">
-  📋 マニューバ一覧を表示（共有用）
-</button>
-
-<!-- 共有用モーダル -->
-<div id="share-modal" class="modal-overlay" style="display: none;">
-  <div class="modal-content share-content">
-    <h2>配置マニューバ一覧</h2>
-    
-    <!-- ここにJavaScriptで選択中マニューバが生成されます -->
-    <div id="share-moueuver-list" class="share-list-container"></div>
-
-    <div class="modal-actions">
-      <button type="button" onclick="copyShareText()">テキストをコピー</button>
-      <button type="button" onclick="closeShareModal()">閉じる</button>
-    </div>
-  </div>
-</div>
-
 <script src="data.js"></script>
 <script src="app.js"></script>
 </body>
